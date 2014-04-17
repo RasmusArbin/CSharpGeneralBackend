@@ -36,7 +36,10 @@ namespace BackendGeneral
 
         public virtual T GetById(int id)
         {
-            return MainRepository.GetById(id);
+            string objectName = typeof(T).Name;
+            T entity = _cache.Get<T>(string.Format("{0}_{1}_{2}", Item, objectName, id));
+
+            return entity ?? MainRepository.GetById(id);
         }
 
         public virtual void Insert(T entity)

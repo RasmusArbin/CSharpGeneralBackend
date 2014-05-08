@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BackendGeneral.Interfaces;
 using BackendGeneral.Providers;
 
 namespace BackendGeneral
 {
     public abstract class Service<T, T2, T3, T4> 
-        where T : class
+        where T : class, IIdentifiable
         where T2 : Repository<T>
         where T3 : ServiceProvider
         where T4 : ICache, new()
@@ -57,8 +54,15 @@ namespace BackendGeneral
         public virtual void Delete(int id)
         {
             //Get the item so that we can logg it
-            T entity = MainRepository.GetById(id);
+            T entity = GetById(id);
 
+            //Delete item from cache
+            RemoveItemFromCache(entity);
+
+            //Dependencies
+            string objectName = typeof(T).Name;
+            RemoveCacheDependencyExpressions(objectName);
+            
             MainRepository.Delete(id);
 
             //Logging
@@ -68,6 +72,9 @@ namespace BackendGeneral
         public virtual void Update(T entity)
         {
             MainRepository.Update(entity);
+
+            //Delete item from cache
+            RemoveItemFromCache(entity);
 
             //Dependencies
             string objectName = typeof(T).Name;
@@ -82,6 +89,19 @@ namespace BackendGeneral
             return MainRepository.GetAll();
         }
 
+        protected void CacheItem(IIdentifiable item)
+        {
+            string objectName = item.GetType().Name;
+            _cache.Set(string.Format("{0}_{1}_{2}", Item, objectName, item.Id), item);
+        }
+
+        protected void RemoveItemFromCache<T6>(T6 item)
+            where T6 : IIdentifiable
+        {
+            string objectName = typeof(T6).Name;
+            _cache.Remove(string.Format("{0}_{1}_{2}", Item, objectName, item.Id));
+        }
+
         protected void CacheQuery<T6>(string expression, List<T6> items)
         {
             //Is an type that can be identified by an Id
@@ -89,10 +109,9 @@ namespace BackendGeneral
             {
                 List<IIdentifiable> lstIdentifiables = items.Cast<IIdentifiable>().ToList();
 
-                string objectName = typeof(T6).Name;
                 foreach (IIdentifiable item in lstIdentifiables)
                 {
-                    _cache.Set(string.Format("{0}_{1}_{2}", Item, objectName, item.Id), item);
+                    CacheItem(item);
                 }
 
                 _cache.Set(string.Format("{0}_{1}", Expression, expression), lstIdentifiables.Select(item => item.Id).ToList());

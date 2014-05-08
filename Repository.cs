@@ -9,7 +9,7 @@ using BackendGeneral.Interfaces;
 namespace BackendGeneral
 {
     public abstract class Repository<T> : IDisposable
-        where T : class
+        where T : class, IIdentifiable 
     {
 
         protected IDbContext DBContext { get; private set; }
@@ -21,7 +21,10 @@ namespace BackendGeneral
             DBContext = dbContext;
         }
 
-        public abstract T GetById(int id);
+        public T GetById(int id)
+        {
+            return DBSet.GetById(id);
+        }
 
         public virtual IQueryable<T> GetAll()
         {
@@ -31,12 +34,16 @@ namespace BackendGeneral
         public virtual void Insert(T entity)
         {
             DBSet.Insert(entity);
+
+            SaveChanges();
         }
 
         public virtual void Delete(int id)
         {
             var entity = GetById(id);
             DBSet.Remove(entity);
+
+            SaveChanges();
         }
 
         /// <summary>
@@ -46,6 +53,7 @@ namespace BackendGeneral
         public virtual void Update(T entity)
         {
             DBSet.Update(entity);
+            SaveChanges();
         }
 
         public void Dispose()

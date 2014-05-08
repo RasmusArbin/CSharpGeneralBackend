@@ -10,5 +10,6 @@ namespace BackendGeneral.Interfaces
         void Remove(T entity);
         void Insert(T entity);
         void Update(T entity);
+        T GetById(int id);
     }
 }

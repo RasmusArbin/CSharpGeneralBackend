@@ -24,14 +24,14 @@ namespace BackendGeneral
             }
         }
 
-        public void ExcecuteStatement(Action<T, T2> statement)
+        public void ExcecuteStatement(Action<T2> statement)
         {
-            statement(DbContext, ServiceProvider);
+            statement(ServiceProvider);
         }
 
-        public T3 ReadStatement<T3>(Func<T, T2, T3> statement)
+        public T3 ReadStatement<T3>(Func<T2, T3> statement)
         {
-            return statement(DbContext, ServiceProvider);
+            return statement(ServiceProvider);
         }
 
         protected abstract T2 ServiceProvider { get; }

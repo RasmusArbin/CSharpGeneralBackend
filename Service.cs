@@ -5,15 +5,14 @@ using BackendGeneral.Providers;
 
 namespace BackendGeneral
 {
-    public abstract class Service<T, T2, T3, T4> 
+    public abstract class Service<T, T2, T3> 
         where T : class, IIdentifiable
         where T2 : Repository<T>
         where T3 : ServiceProvider
-        where T4 : ICache, new()
     {
         protected readonly T2 MainRepository;
         public readonly T3 ServiceProvider;
-        private readonly T4 _cache;
+        private readonly ICache _cache;
         private readonly IDbContext _dbContext;
         private readonly ILogger _logger;
 
@@ -22,11 +21,11 @@ namespace BackendGeneral
         private const string Expression = "expression";
         private const string Item = "item";
 
-        protected Service(T2 repository, T3 serviceProvider, IDbContext dbContext, ILogger logger)
+        protected Service(T2 repository, T3 serviceProvider, IDbContext dbContext, ILogger logger, ICache cache)
         {
             MainRepository = repository;
             ServiceProvider = serviceProvider;
-            _cache = new T4();
+            _cache = cache;
             _dbContext = dbContext;
             _logger = logger;
         }

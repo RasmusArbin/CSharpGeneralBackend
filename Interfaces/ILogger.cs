@@ -14,6 +14,6 @@ namespace BackendGeneral.Interfaces
 
         void LogUpdate<T>(T entity);
 
-        void Log(string loggingMessage);
+        void Log(string loggingMessage, string stackTrace);
     }
 }

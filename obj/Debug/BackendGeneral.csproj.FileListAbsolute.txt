@@ -28,3 +28,23 @@ C:\Users\rjn\Dropbox\Repo\NumberTumble\BackendGeneral\bin\Debug\EntityFramework.
 C:\Users\rjn\Dropbox\Repo\NumberTumble\BackendGeneral\obj\Debug\BackendGeneral.csprojResolveAssemblyReference.cache
 C:\Users\rjn\Dropbox\Repo\NumberTumble\BackendGeneral\obj\Debug\BackendGeneral.dll
 C:\Users\rjn\Dropbox\Repo\NumberTumble\BackendGeneral\obj\Debug\BackendGeneral.pdb
+C:\Users\Rasmus Jonasson\Dropbox\Repo\NumberTumble\BackendGeneral\bin\Debug\BackendGeneral.dll.config
+C:\Users\Rasmus Jonasson\Dropbox\Repo\NumberTumble\BackendGeneral\bin\Debug\BackendGeneral.dll
+C:\Users\Rasmus Jonasson\Dropbox\Repo\NumberTumble\BackendGeneral\bin\Debug\BackendGeneral.pdb
+C:\Users\Rasmus Jonasson\Dropbox\Repo\NumberTumble\BackendGeneral\bin\Debug\EntityFramework.dll
+C:\Users\Rasmus Jonasson\Dropbox\Repo\NumberTumble\BackendGeneral\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Rasmus Jonasson\Dropbox\Repo\NumberTumble\BackendGeneral\bin\Debug\EntityFramework.xml
+C:\Users\Rasmus Jonasson\Dropbox\Repo\NumberTumble\BackendGeneral\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Rasmus Jonasson\Dropbox\Repo\NumberTumble\BackendGeneral\obj\Debug\BackendGeneral.csprojResolveAssemblyReference.cache
+C:\Users\Rasmus Jonasson\Dropbox\Repo\NumberTumble\BackendGeneral\obj\Debug\BackendGeneral.dll
+C:\Users\Rasmus Jonasson\Dropbox\Repo\NumberTumble\BackendGeneral\obj\Debug\BackendGeneral.pdb
+C:\Users\rasmu_000\Dropbox\Repo\NumberTumble\BackendGeneral\bin\Debug\BackendGeneral.dll.config
+C:\Users\rasmu_000\Dropbox\Repo\NumberTumble\BackendGeneral\bin\Debug\BackendGeneral.dll
+C:\Users\rasmu_000\Dropbox\Repo\NumberTumble\BackendGeneral\bin\Debug\BackendGeneral.pdb
+C:\Users\rasmu_000\Dropbox\Repo\NumberTumble\BackendGeneral\bin\Debug\EntityFramework.dll
+C:\Users\rasmu_000\Dropbox\Repo\NumberTumble\BackendGeneral\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\rasmu_000\Dropbox\Repo\NumberTumble\BackendGeneral\bin\Debug\EntityFramework.xml
+C:\Users\rasmu_000\Dropbox\Repo\NumberTumble\BackendGeneral\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\rasmu_000\Dropbox\Repo\NumberTumble\BackendGeneral\obj\Debug\BackendGeneral.csprojResolveAssemblyReference.cache
+C:\Users\rasmu_000\Dropbox\Repo\NumberTumble\BackendGeneral\obj\Debug\BackendGeneral.dll
+C:\Users\rasmu_000\Dropbox\Repo\NumberTumble\BackendGeneral\obj\Debug\BackendGeneral.pdb

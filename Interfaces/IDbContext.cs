@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BackendGeneral.Interfaces
 {
     public interface IDbContext : IDisposable
     {
         int SaveChanges();
+        Task<int> SaveChangedAsync();
+        
         ITable<TEntity> DbSet<TEntity>()
             where TEntity : class;
 

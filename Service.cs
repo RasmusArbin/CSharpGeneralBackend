@@ -2,6 +2,7 @@
 using System.Linq;
 using BackendGeneral.Interfaces;
 using BackendGeneral.Providers;
+using System.Threading.Tasks;
 
 namespace BackendGeneral
 {
@@ -59,6 +60,42 @@ namespace BackendGeneral
             }
         }
 
+        public async Task<List<T6>> ReadQueryAsync<T6>(IQueryable<T6> query)
+        {
+            string expression = _dbContext.GetQueryableAsString<T6>(query);
+            List<T6> lstCacheItems;
+
+            if (typeof(T6).GetInterfaces().Contains(typeof(IIdentifiable)))
+            {
+
+                List<int> lstIds = _cache.Get<List<int>>(string.Format("{0}_{1}", Expression, expression));
+                if (lstIds != null)
+                {
+                    lstCacheItems = new List<T6>();
+                    string objectName = typeof(T6).Name;
+                    foreach (int id in lstIds)
+                    {
+                        lstCacheItems.Add(_cache.Get<T6>(string.Format("{0}_{1}_{2}", Item, objectName, id)));
+                    }
+                }
+                else
+                {
+                    lstCacheItems = await ReadQueryAndCacheAsync(query, expression);
+                }
+            }
+            else
+            {
+                lstCacheItems = _cache.Get<List<T6>>(string.Format("{0}_{1}", Expression, expression));
+
+                if (lstCacheItems == null)
+                {
+                    lstCacheItems = await ReadQueryAndCacheAsync(query, expression);
+                }
+            }
+
+            return lstCacheItems;
+        }
+
         public List<T6> ReadQuery<T6>(IQueryable<T6> query)
         {
             string expression = _dbContext.GetQueryableAsString<T6>(query);
@@ -95,10 +132,20 @@ namespace BackendGeneral
             return lstCacheItems;
         }
 
+        private async Task<List<T>> ReadQueryAndCacheAsync<T>(IQueryable<T> query, string expression)
+        {
+            List<T> lstCacheItems = await _dbContext.ReadQueryAsync(query);
+
+            CacheQuery(expression, lstCacheItems);
+
+            CacheDependencies(query, expression);
+
+            return lstCacheItems;
+        }
+
         private List<T> ReadQueryAndCache<T>(IQueryable<T> query, string expression)
         {
-            List<T> lstCacheItems = query
-                        .ToList();
+            List<T> lstCacheItems = _dbContext.ReadQuery(query);
 
             CacheQuery(expression, lstCacheItems);
 

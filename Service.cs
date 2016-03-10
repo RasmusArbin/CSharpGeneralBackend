@@ -5,13 +5,10 @@ using BackendGeneral.Providers;
 
 namespace BackendGeneral
 {
-    public abstract class Service<T, T2, T3> 
-        where T : class, IIdentifiable
-        where T2 : Repository<T>
-        where T3 : ServiceProvider
+    public abstract class Service<T>
+        where T : RepositoryProvider
     {
-        protected readonly T2 MainRepository;
-        public readonly T3 ServiceProvider;
+        protected readonly T RepositoryProvider;
         private readonly ICache _cache;
         private readonly IDbContext _dbContext;
         private readonly ILogger _logger;
@@ -21,71 +18,12 @@ namespace BackendGeneral
         private const string Expression = "expression";
         private const string Item = "item";
 
-        protected Service(T2 repository, T3 serviceProvider, IDbContext dbContext, ILogger logger, ICache cache)
+        protected Service(T repositoryProvider, T serviceProvider, IDbContext dbContext, ILogger logger, ICache cache)
         {
-            MainRepository = repository;
-            ServiceProvider = serviceProvider;
+            RepositoryProvider = repositoryProvider;
             _cache = cache;
             _dbContext = dbContext;
             _logger = logger;
-        }
-
-        public virtual T GetById(int id)
-        {
-            string objectName = typeof(T).Name;
-            T entity = _cache.Get<T>(string.Format("{0}_{1}_{2}", Item, objectName, id));
-
-            return entity ?? MainRepository.GetById(id);
-        }
-
-        public virtual void Insert(T entity)
-        {
-            MainRepository.Insert(entity);
-
-            //Dependencies
-            string objectName = typeof(T).Name;
-            RemoveCacheDependencyExpressions(objectName);
-
-            //Logging
-            _logger.LogInsert(entity);
-        }
-
-        public virtual void Delete(int id)
-        {
-            //Get the item so that we can logg it
-            T entity = GetById(id);
-
-            //Delete item from cache
-            RemoveItemFromCache(entity);
-
-            //Dependencies
-            string objectName = typeof(T).Name;
-            RemoveCacheDependencyExpressions(objectName);
-            
-            MainRepository.Delete(id);
-
-            //Logging
-            _logger.LogDelete(entity);
-        }
-
-        public virtual void Update(T entity)
-        {
-            MainRepository.Update(entity);
-
-            //Delete item from cache
-            RemoveItemFromCache(entity);
-
-            //Dependencies
-            string objectName = typeof(T).Name;
-            RemoveCacheDependencyExpressions(objectName);
-
-            //Logging
-            _logger.LogUpdate(entity);
-        }
-
-        public virtual IQueryable<T> GetAll()
-        {
-            return MainRepository.GetAll();
         }
 
         protected void CacheItem(IIdentifiable item)

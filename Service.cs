@@ -3,6 +3,7 @@ using System.Linq;
 using BackendGeneral.Interfaces;
 using BackendGeneral.Providers;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace BackendGeneral
 {
@@ -24,12 +25,12 @@ namespace BackendGeneral
 
         }
 
-        protected Service(T repositoryProvider, T serviceProvider, IDbContext dbContext, ILogger logger, ICache cache)
+        protected Service(T repositoryProvider, IDbContext dbContext, ILogger logger, ICache cache)
         {
-            Bind(repositoryProvider, serviceProvider, dbContext, logger, cache);
+            Bind(repositoryProvider, dbContext, logger, cache);
         }
 
-        public void Bind(T repositoryProvider, T serviceProvider, IDbContext dbContext, ILogger logger, ICache cache)
+        public void Bind(T repositoryProvider, IDbContext dbContext, ILogger logger, ICache cache)
         {
             RepositoryProvider = repositoryProvider;
             _cache = cache;
@@ -206,6 +207,96 @@ namespace BackendGeneral
         protected Task<int> SaveChangesAsync()
         {
             return _dbContext.SaveChangesAsync();
+        }
+
+        public virtual T GetById<T>(Repository<T> repo, int id)
+            where T : class, IIdentifiable
+        {
+            string objectName = typeof(T).Name;
+            T entity = _cache.Get<T>(string.Format("{0}_{1}_{2}", Item, objectName, id));
+
+            return entity ?? repo.GetById(id);
+        }
+
+        public virtual async Task<T> GetByIdAsync<T>(Repository<T> repo, int id)
+            where T : class, IIdentifiable
+        {
+            string objectName = typeof(T).Name;
+            T entity = _cache.Get<T>(string.Format("{0}_{1}_{2}", Item, objectName, id));
+
+            if (entity == null)
+            {
+                return await repo.GetByIdAsync(id);
+            }
+
+            return await Task.FromResult(repo.GetById(id));
+        }
+
+        public virtual void Insert<T>(Repository<T> repo, T entity)
+            where T : class, IIdentifiable
+        {
+            repo.Insert(entity);
+
+            //Dependencies
+            string objectName = typeof(T).Name;
+            RemoveCacheDependencyExpressions(objectName);
+
+            //Logging
+            _logger.LogInsert(entity);
+        }
+
+        public virtual void Delete<T>(Repository<T> repo, int id)
+            where T : class, IIdentifiable
+        {
+            //Get the item so that we can logg it
+            T entity = GetById(repo, id);
+
+            //Delete item from cache
+            RemoveItemFromCache(entity);
+
+            //Dependencies
+            string objectName = typeof(T).Name;
+            RemoveCacheDependencyExpressions(objectName);
+
+            repo.Delete(id);
+
+            //Logging
+            _logger.LogDelete(entity);
+        }
+
+        public virtual async void DeleteAsync<T>(Repository<T> repo, int id)
+            where T : class, IIdentifiable
+        {
+            //Get the item so that we can logg it
+            T entity = await GetByIdAsync(repo, id);
+
+            //Delete item from cache
+            RemoveItemFromCache(entity);
+
+            //Dependencies
+            string objectName = typeof(T).Name;
+            RemoveCacheDependencyExpressions(objectName);
+
+            repo.Delete(id);
+
+            //Logging
+            _logger.LogDelete(entity);
+        }
+
+        public virtual void Update<T>(Repository<T> repo, T entity)
+            where T : class, IIdentifiable
+        {
+            repo.Update(entity);
+
+            //Delete item from cache
+            RemoveItemFromCache(entity);
+
+            //Dependencies
+            string objectName = typeof(T).Name;
+            RemoveCacheDependencyExpressions(objectName);
+
+            //Logging
+            _logger.LogUpdate(entity);
         }
     }
 }

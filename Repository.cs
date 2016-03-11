@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
+using System.Threading.Tasks;
 using BackendGeneral.Interfaces;
 
 namespace BackendGeneral
@@ -34,6 +35,11 @@ namespace BackendGeneral
             return DBSet.GetById(id);
         }
 
+        public async Task<T> GetByIdAsync(int id)
+        {
+            return await DBSet.GetByIdAsync(id);
+        }
+
         public virtual IQueryable<T> GetAll()
         {
             return DBSet.GetAll();
@@ -43,7 +49,7 @@ namespace BackendGeneral
         {
             DBSet.Insert(entity);
 
-            SaveChanges();
+            DBContext.SaveChanges();
         }
 
         public virtual void Delete(int id)
@@ -51,7 +57,7 @@ namespace BackendGeneral
             var entity = GetById(id);
             DBSet.Remove(entity);
 
-            SaveChanges();
+            DBContext.SaveChanges();
         }
 
         /// <summary>
@@ -61,21 +67,37 @@ namespace BackendGeneral
         public virtual void Update(T entity)
         {
             DBSet.Update(entity);
-            SaveChanges();
+            DBContext.SaveChanges();
+        }
+
+        public virtual async Task InsertAsync(T entity)
+        {
+            DBSet.Insert(entity);
+
+            await DBContext.SaveChangesAsync();
+        }
+
+        public virtual async Task DeleteAsync(int id)
+        {
+            var entity = GetById(id);
+            DBSet.Remove(entity);
+
+            await DBContext.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// TODO: Remove?
+        /// </summary>
+        /// <param name="entity"></param>
+        public virtual async Task UpdateAsync(T entity)
+        {
+            DBSet.Update(entity);
+            await DBContext.SaveChangesAsync();
         }
 
         public void Dispose()
         {
             DBContext.Dispose();
-        }
-
-        /// <summary>
-        /// User for special cases
-        /// DO NOT OVERUSE
-        /// </summary>
-        public void SaveChanges()
-        {
-            DBContext.SaveChanges();
         }
     }
 }

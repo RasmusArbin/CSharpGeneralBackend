@@ -264,6 +264,19 @@ namespace BackendGeneral
             _logger.LogDelete(entity);
         }
 
+        public virtual async Task InsertAsync<T>(Repository<T> repo, T entity)
+            where T : class, IIdentifiable
+        {
+            await repo.InsertAsync(entity);
+
+            //Dependencies
+            string objectName = typeof(T).Name;
+            RemoveCacheDependencyExpressions(objectName);
+
+            //Logging
+            _logger.LogInsert(entity);
+        }
+
         public virtual async void DeleteAsync<T>(Repository<T> repo, int id)
             where T : class, IIdentifiable
         {

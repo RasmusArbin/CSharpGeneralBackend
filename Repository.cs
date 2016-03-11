@@ -11,9 +11,19 @@ namespace BackendGeneral
     {
 
         protected IDbContext DBContext { get; private set; }
-        protected readonly ITable<T> DBSet;
+        protected ITable<T> DBSet;
+
+        public Repository()
+        {
+
+        }
 
         protected Repository(IDbContext dbContext)
+        {
+            Bind(dbContext);
+        }
+
+        public void Bind(IDbContext dbContext)
         {
             DBSet = dbContext.DbSet<T>();
             DBContext = dbContext;

@@ -9,17 +9,27 @@ namespace BackendGeneral
     public abstract class Service<T>
         where T : RepositoryProvider
     {
-        protected readonly T RepositoryProvider;
-        private readonly ICache _cache;
-        private readonly IDbContext _dbContext;
-        private readonly ILogger _logger;
+        protected T RepositoryProvider;
+        private ICache _cache;
+        private IDbContext _dbContext;
+        private ILogger _logger;
 
         //TODO: Web.config
         private const string Dependency = "dependency";
         private const string Expression = "expression";
         private const string Item = "item";
 
+        public Service()
+        {
+
+        }
+
         protected Service(T repositoryProvider, T serviceProvider, IDbContext dbContext, ILogger logger, ICache cache)
+        {
+            Bind(repositoryProvider, serviceProvider, dbContext, logger, cache);
+        }
+
+        public void Bind(T repositoryProvider, T serviceProvider, IDbContext dbContext, ILogger logger, ICache cache)
         {
             RepositoryProvider = repositoryProvider;
             _cache = cache;
@@ -186,6 +196,16 @@ namespace BackendGeneral
 
                 _cache.Set(string.Format("{0}_{1}", Dependency, dependency), new List<string>());
             }
+        }
+
+        protected int SaveChanges()
+        {
+            return _dbContext.SaveChanges();
+        }
+
+        protected Task<int> SaveChangesAsync()
+        {
+            return _dbContext.SaveChangesAsync();
         }
     }
 }

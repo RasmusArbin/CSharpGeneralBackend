@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BackendGeneral.Interfaces
+﻿namespace BackendGeneral.Interfaces
 {
     public interface ILogger
     {
-        void LogInsert<T>(T entity);
+        void LogInsert(IIdentifiable entity);
 
-        void LogDelete<T>(T entity);
+        void LogDelete(IIdentifiable entity);
 
-        void LogUpdate<T>(T entity);
+        void LogUpdate(IIdentifiable entity);
 
         void Log(string loggingMessage, string stackTrace);
     }

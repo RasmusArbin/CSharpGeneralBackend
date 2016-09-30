@@ -44,6 +44,11 @@ namespace BackendGeneral
             _cache.Set(string.Format("{0}_{1}_{2}", Item, objectName, item.Id), item);
         }
 
+        protected virtual T6 GetCacheItem<T6>(string key, string outerExpression)
+        {
+            return _cache.Get<T6>(key);
+        }
+
         protected void RemoveItemFromCache<T6>(T6 item)
             where T6 : IIdentifiable
         {
@@ -86,7 +91,8 @@ namespace BackendGeneral
                     string objectName = typeof(T6).Name;
                     foreach (int id in lstIds)
                     {
-                        lstCacheItems.Add(_cache.Get<T6>(string.Format("{0}_{1}_{2}", Item, objectName, id)));
+                        lstCacheItems.Add(GetCacheItem<T6>(string.Format("{0}_{1}_{2}", Item, objectName, id),
+                            expression));
                     }
                 }
                 else

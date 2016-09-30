@@ -38,7 +38,7 @@ namespace BackendGeneral
             _logger = logger;
         }
 
-        virtual protected void CacheItem(IIdentifiable item, IQueryable<T> outerQuery)
+        protected virtual void CacheItem(IIdentifiable item, string outerExpression)
         {
             string objectName = item.GetType().Name;
             _cache.Set(string.Format("{0}_{1}_{2}", Item, objectName, item.Id), item);

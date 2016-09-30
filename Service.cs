@@ -38,7 +38,7 @@ namespace BackendGeneral
             _logger = logger;
         }
 
-        protected void CacheItem(IIdentifiable item)
+        virtual protected void CacheItem(IIdentifiable item, IQueryable<T> outerQuery)
         {
             string objectName = item.GetType().Name;
             _cache.Set(string.Format("{0}_{1}_{2}", Item, objectName, item.Id), item);
@@ -60,7 +60,7 @@ namespace BackendGeneral
 
                 foreach (IIdentifiable item in lstIdentifiables)
                 {
-                    CacheItem(item);
+                    CacheItem(item, expression);
                 }
 
                 _cache.Set(string.Format("{0}_{1}", Expression, expression), lstIdentifiables.Select(item => item.Id).ToList());

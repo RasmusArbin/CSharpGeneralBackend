@@ -46,8 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enums\EntityStateEnum.cs" />
-    <Compile Include="EventArgs\CacheArgs.cs" />
     <Compile Include="Interfaces\ICache.cs" />
     <Compile Include="Interfaces\IDbContext.cs" />
     <Compile Include="Interfaces\IIdentifiable.cs" />
